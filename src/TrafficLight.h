@@ -14,8 +14,8 @@ template <class T>
 class MessageQueue
 {
 public:
-    T MessageQueue<T>::receive();
-    void MessageQueue<T>::send(T &&msg);
+    T receive();
+    void send(T &&msg);
 private:
     std::deque<T> _queue;
     std::condition_variable _condition;
