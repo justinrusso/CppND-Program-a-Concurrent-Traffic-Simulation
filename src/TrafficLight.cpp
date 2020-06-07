@@ -61,22 +61,24 @@ void TrafficLight::cycleThroughPhases()
     std::random_device seeder;  
     std::mt19937 engine(seeder());
     std::uniform_int_distribution<int> dist(4, 6);
+    int cycleDuration = dist(engine);
 
     auto lastUpdate = std::chrono::system_clock::now();
 
     while (true) {
         auto timeSinceLastUpdate = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - lastUpdate).count();
 
-        if (timeSinceLastUpdate >= dist(engine)) {
+        if (timeSinceLastUpdate >= cycleDuration) {
             _currentPhase = _currentPhase == TrafficLightPhase::green ? TrafficLightPhase::red : TrafficLightPhase::green;
 
             auto message = _currentPhase;
             auto future = std::async(std::launch::async, &MessageQueue<TrafficLightPhase>::send, &_messageQueue, std::move(message));
             
             future.wait();
-        }
 
-        lastUpdate = std::chrono::system_clock::now();
+            lastUpdate = std::chrono::system_clock::now();
+            cycleDuration = dist(engine);
+        }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
