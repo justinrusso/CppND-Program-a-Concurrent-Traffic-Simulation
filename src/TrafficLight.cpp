@@ -71,7 +71,7 @@ void TrafficLight::cycleThroughPhases()
             _currentPhase = _currentPhase == TrafficLightPhase::green ? TrafficLightPhase::red : TrafficLightPhase::green;
 
             auto message = _currentPhase;
-            auto future = std::async(std::launch::async, &MessageQueue<TrafficLightPhase>::send, _messageQueue, std::move(message));
+            auto future = std::async(std::launch::async, &MessageQueue<TrafficLightPhase>::send, &_messageQueue, std::move(message));
             
             future.wait();
         }
